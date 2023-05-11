@@ -1,4 +1,1 @@
 Flask
-Gunicorn
-json
-requests
