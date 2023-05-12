@@ -1,4 +1,3 @@
-from winreg import OpenKey
 from flask import Flask, request
 
 # 載入 json 標準函式庫，處理回傳的資料格式
@@ -12,16 +11,16 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 app = Flask(__name__)
-#api_key = os.environ.get('API_KEY')
-#api_key = os.environ.get('API_KEY')
-#
-#url = "https://api.openai.com/v1/chat/completions"
-#headers = {
-#    "Content-Type": "application/json",
-#    "Authorization": "Bearer " + api_key
-#}
-#chat_history = []
-#MAX_HISTORY_LENGTH = 20  # 設定 chat_history 最大長度
+
+api_key = os.environ.get('API_KEY')
+
+url = "https://api.openai.com/v1/chat/completions"
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + api_key
+}
+chat_history = []
+MAX_HISTORY_LENGTH = 20  # 設定 chat_history 最大長度
 
 @app.route("/callback", methods=['GET', 'POST'])
 def linebot():
@@ -41,20 +40,20 @@ def linebot():
             print(msg)                                       # 印出內容
             reply = msg
 
-#            chat_history.append({"role": "user", "content": msg})
-#            data = {
-#                "model": "gpt-3.5-turbo",
-#                "messages": chat_history
-#            }
-#            response = requests.post(url, headers=headers, data=json.dumps(data))
-#            response_json = response.json()
-#            content = response_json['choices'][0]['message']['content']
-#            print(content)
-#            reply = content
-#            # 判斷 chat_history 長度是否超過最大值，若是，刪除最早的一筆資料
-#            if len(chat_history) >= MAX_HISTORY_LENGTH:
-#                chat_history.pop(0)
-#            chat_history.append({"role": "assistant", "content": content})
+            chat_history.append({"role": "user", "content": msg})
+            data = {
+                "model": "gpt-3.5-turbo",
+                "messages": chat_history
+            }
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            response_json = response.json()
+            content = response_json['choices'][0]['message']['content']
+            print(content)
+            reply = content
+            # 判斷 chat_history 長度是否超過最大值，若是，刪除最早的一筆資料
+            if len(chat_history) >= MAX_HISTORY_LENGTH:
+                chat_history.pop(0)
+            chat_history.append({"role": "assistant", "content": content})
 
         else:
             reply = '你傳的不是文字呦～'
