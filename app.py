@@ -13,6 +13,8 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 app = Flask(__name__)
 
 api_key = os.environ.get('API_KEY')
+line_channel_access_token = os.environ.get('LINE_CHANNEL_ACCESS_TOKEN')
+line_channel_secret = os.environ.get('LINE_CHANNEL_SECRET')
 
 url = "https://api.openai.com/v1/chat/completions"
 headers = {
@@ -27,8 +29,8 @@ def linebot():
     body = request.get_data(as_text=True)                    # 取得收到的訊息內容
     try:
         json_data = json.loads(body)                         # json 格式化訊息內容
-        access_token = 's47JHrUKfsC1fqVLWzp+OQ8Gj23Vr/rguDmLyeiCYrNaD/JLaxS3DlIAyevsikXaWhFdth0uoPEBTk9ZXPrEMzyj4l7WasiV9LTEY2x1flYRSc0jqkMohRa0gNKFgOBktyHPKjmpRepQTuOpDFlhcQdB04t89/1O/w1cDnyilFU='
-        secret = 'c68430d99c0fedee7c7b3afe930010ab'
+        access_token = line_channel_access_token
+        secret = line_channel_secret
         line_bot_api = LineBotApi(access_token)              # 確認 token 是否正確
         handler = WebhookHandler(secret)                     # 確認 secret 是否正確
         signature = request.headers['X-Line-Signature']      # 加入回傳的 headers
@@ -39,7 +41,6 @@ def linebot():
             msg = json_data['events'][0]['message']['text']  # 取得 LINE 收到的文字訊息
             print(msg)                                       # 印出內容
             reply = msg
-
             chat_history.append({"role": "user", "content": msg})
             data = {
                 "model": "gpt-3.5-turbo",
@@ -55,13 +56,17 @@ def linebot():
                 chat_history.pop(0)
             chat_history.append({"role": "assistant", "content": content})
 
+
         else:
             reply = '你傳的不是文字呦～'
         print(reply)
         line_bot_api.reply_message(tk,TextSendMessage(reply))# 回傳訊息
+
     except:
         print(body)                                          # 如果發生錯誤，印出收到的內容
     return 'OK'  
+
+
 
 @app.route('/')
 def hello_world():
