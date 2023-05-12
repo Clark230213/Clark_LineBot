@@ -1,19 +1,23 @@
+from winreg import OpenKey
 from flask import Flask, request
 
 # 載入 json 標準函式庫，處理回傳的資料格式
 import json
 import requests
+import os
+
 # 載入 LINE Message API 相關函式庫
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 app = Flask(__name__)
+api_key = os.environ.get('API_KEY')
 
 url = "https://api.openai.com/v1/chat/completions"
 headers = {
     "Content-Type": "application/json",
-    "Authorization": "Bearer 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"
+    "Authorization": "Bearer " + api_key
 }
 chat_history = []
 MAX_HISTORY_LENGTH = 20  # 設定 chat_history 最大長度
