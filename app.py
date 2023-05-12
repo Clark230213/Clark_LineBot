@@ -13,7 +13,7 @@ app = Flask(__name__)
 url = "https://api.openai.com/v1/chat/completions"
 headers = {
     "Content-Type": "application/json",
-    "Authorization": "Bearer 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"
+    "Authorization": "Bearer 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"
 }
 chat_history = []
 MAX_HISTORY_LENGTH = 20  # 設定 chat_history 最大長度
